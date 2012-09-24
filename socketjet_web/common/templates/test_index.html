@@ -1,0 +1,184 @@
+<html>
+  <head>  
+	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
+	<script src="{{ STATIC_URL }}js/json2.js"></script>
+    <script src="{{ STATIC_URL }}socket_lib/socket.io.js"></script>
+
+	<script> 
+		function assert(statement){
+			if (statement){
+				return true;
+			} else {
+				return false;
+			}
+		}
+		var url = 'http://localhost:8001';
+	  
+		// test script for all socket functionality
+		var socket = io.connect(url+'?api_key=add_api_key&user_id=1');
+		
+		// general authentication 
+		socket.on('connect', function(){
+			socket.emit('get-connid', function(data){
+				$('#message').html('got connid');
+			    connid = data; 
+			    //$.post('/websocket/auth/', {api_key:'1234', conn_id:connid});         
+				$.post('/websocket/auth/', {api_key:'add_api_key', conn_id:connid, channel:'privatechan1'}, function(data){
+					alert(data.message);
+				});
+			});
+		});
+		
+		socket.on('auth', function(data){
+		    $('#auth').html(data);
+		});
+		
+		socket.on('auth:privatechan1', function(data){
+			$('#auth2').html(data);
+		}); 
+		 	
+		function run_tests(){
+			// test db-set
+			socket.on('db-set', function(data){
+				var result = 'Failed'; 
+				data = JSON.parse(data);     
+				if (assert(data.foo)){
+					result = 'Passed';  
+				}
+				$('#db-set').html(result);
+			});
+		
+			socket.emit('db-set', {'foo':'bar'});
+			
+			// test db-get
+			socket.on('db-get', function(data){
+				var result = 'Failed';
+				if (assert(data == 'bar')){
+					result = 'Passed';
+				}                     
+				$('#db-get').html(result);
+			});
+
+			socket.emit('db-get', 'foo');      
+
+			// test subscribe  
+			socket.emit('subscribe', 'channel1', function(data){
+				var result = 'Failed';  
+				if (assert(data == 'subscribed')){
+					result = 'Passed';
+				}                     
+				$('#subscribe').html(result);
+			});
+
+			// test message to subscribed channel
+			socket.on('channel1', function(data){    
+				var result = 'Failed';  
+				if (assert(data == 'hello')){
+					result = 'Passed';
+				}                     
+				$('#channel1').html(result);
+			});             
+
+			socket.emit('channel1', {message:'hello'}, function(data){   
+				$('#channel1').html(data);
+			});
+
+			// unsubscribe
+			socket.emit('unsubscribe', 'channel1', function(data){
+				var result = 'Failed';  
+				if (assert(data == 'unsubscribed')){
+					result = 'Passed';
+				}                     
+				$('#unsubscribe').html(result);
+			});
+
+			// failed unsubscribe
+			socket.emit('unsubscribe', 'channel1', function(data){
+				var result = 'Failed';  
+				if (assert(data == 'not subscribed')){
+					result = 'Passed';
+				}                     
+				$('#notsubscribed').html(result);
+			}); 
+			
+			//private channel message
+			socket.on('privatechan1', function(data){
+				var result = 'Failed';  
+				if (assert(data == 'hello')){
+					result = 'Passed';
+				}                     
+				$('#privatechan1').html(result);
+			});
+			
+			socket.emit('privatechan1', {message:'hello'}, function(data){
+				$('#privatechan1').html(data);
+			}); 
+			
+			/* to add */
+			// message to individual
+			
+			// message to private channel
+			
+			// message to normal channel
+		}
+		
+		$(document).ready(function(){
+			$('#run').click(function(){
+				run_tests(); 
+			});   
+		});
+		
+		
+		        
+	</script>
+  </head>
+  <body>
+	Message: <span id="message"></span><br />
+    {% if user.is_authenticated %}
+        Logged in
+    {% else %}
+        Logged out
+    {% endif %} 
+	<br />
+	<a href="#" id="run">run tests</a>
+    <table width="500px">
+        <tr>
+            <td>authenticated:</td>
+            <td><span id="auth"></span></td>
+        </tr>
+		<tr>
+            <td>Private channel auth:</td>
+            <td><span id="auth2"></span></td>
+        </tr>   
+		<tr>
+			<td>db-set:</td>
+			<td><span id="db-set"></span></td>
+		</tr>
+		<tr>
+			<td>db-get:</td>
+			<td><span id="db-get"></span></td>
+		</tr>     
+		<tr>
+			<td>subscribe:</td>
+			<td><span id="subscribe"></span></td>
+		</tr> 
+		<tr>
+			<td>channel message:</td>
+			<td><span id="channel1"></span></td>
+		</tr>
+		<tr>
+			<td>unsubscribe:</td>
+			<td><span id="unsubscribe"></span></td>
+		</tr>
+		<tr>
+			<td>failed unsubscribe:</td>
+			<td><span id="notsubscribed"></span></td>
+		</tr>
+		<tr>
+			<td>private chan message:</td>
+			<td><span id="privatechan1"></span></td>
+		</tr>
+	</table>
+	
+  </body>
+</html>

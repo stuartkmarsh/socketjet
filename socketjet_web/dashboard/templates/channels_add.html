@@ -1,0 +1,41 @@
+{% extends 'dashboard_base.html' %}   
+
+{% block main_content %}
+	<div class="row">
+		<div class="span12"> 
+			<ul class="nav pills">
+				<li><a href="{% url sites_list %}">Sites</a></li>
+				<li class="active"><a href="{% url channels_list %}">Channels</a></li>
+				<li><a href="">Users</a></li>
+			</ul>
+            <ul class="breadcrumb">
+				<li><a href="/dashboard/sites/">List channels</a> <span class="divider">/</span></li>
+				<li class="active"><strong>Add channel</strong></li>
+			</ul>
+			
+			<h2 class="page-header">Add Channel</h2>      
+
+			<form action="." method="POST" class="form-horizontal">{% csrf_token %}
+				<div class="control-group {% if form.channel_name.errors %}error{% endif %}">
+	               	<label for="id_channel_name">{{ form.channel_name.label }}</label>
+					<div class="controls">
+						{{ form.channel_name }} 
+						{{ form.channel_name.errors|safe }}
+					</div>  
+				</div>  
+				
+				<div class="control-group {% if form.site.errors %}error{% endif %}">
+	               	<label for="id_site">{{ form.site.label }}</label>
+					<div class="controls"> 
+						{{ form.site }} {{ form.site.errors|safe }}
+					</div>  
+				</div>          
+				          
+				<div class="form-actions">
+	            	<button type="submit" class="btn primary">Create site</button>  
+				</div>
+				
+			</form>                
+		</div>
+	</div>
+{% endblock %}

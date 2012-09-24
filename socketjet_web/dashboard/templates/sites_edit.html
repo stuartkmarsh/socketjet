@@ -1,0 +1,55 @@
+{% extends 'dashboard_base.html' %}
+
+{% block main_content %}
+	<div class="row">
+		<div class="span12"> 
+            <ul class="breadcrumb">
+				<li><a href="/dashboard/sites/">List sites</a> <span class="divider">/</span></li>
+				<li class="active"><strong>Edit site</strong></li>
+			</ul>
+			
+			<h2 class="page-header">Edit Site</h2>
+			<div class="alert alert-error">
+				<a class="close" data-dismiss="alert">&times;</a>
+				<strong>Warning!</strong>
+				Changing the site name will also change your subdomain name.
+			</div>
+
+			<form action="." method="POST" class="form-horizontal">{% csrf_token %}
+				<div class="control-group {% if form.site_prefix.errors %}error{% endif %}">
+	               	<label for="id_site_prefix">{{ form.site_prefix.label }}</label>
+					<div class="controls">
+						{{ form.site_prefix }} 
+						{{ form.site_prefix.errors|safe }}
+					</div>  
+				</div>  
+				
+				<div class="control-group">
+	               	<label for="id_api_key">API Key</label>
+					<div class="controls">
+						<p style="padding-top: 5px">{{ site.api_key }}</p>
+					</div>  
+				</div>
+				
+				<div class="control-group">
+	               	<label for="id_secret_key">Secret Key</label>
+					<div class="controls">
+						<p style="padding-top: 5px">{{ site.secret_key }}</p>
+					</div>  
+				</div>
+				
+				<div class="control-group">
+	               	<label for="id_created">Created date</label>
+					<div class="controls">
+						<p style="padding-top: 5px">{{ site.created|date:'M jS Y' }}</p>
+					</div>  
+				</div>
+				
+				<div class="form-actions">
+	            	<button type="submit" class="btn primary">Save changes</button>  
+				</div>
+				
+			</form>                
+		</div>
+	</div>
+{% endblock %}

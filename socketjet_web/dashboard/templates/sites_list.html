@@ -1,0 +1,73 @@
+{% extends "dashboard_base.html" %}
+
+{% block script %}
+	{{ block.super }}
+	<script type="text/javascript">  
+		$(document).ready(function() {
+			$('.delete').click(function() {    
+				$('#del_btn').attr('href', '/dashboard/sites/delete/' + this.id + '/');
+				$('#delete-modal').modal('show');
+				return false;
+			});
+		});
+	</script>
+{% endblock %}
+                                 
+{% block main_content %}
+	
+	<div class="row">
+		<div class="span12"> 
+			{% if messages %}
+				{% for message in messages %}
+				 	<div class="alert alert-success">
+						<a class="close" data-dismiss="alert">&times;</a>
+						<strong>Success!</strong>
+						{{ message }}
+					</div>
+				{% endfor %}
+			{% endif %}
+			
+			<h2 class="page-header">Sites</h2>
+			<a href="/dashboard/sites/add/" class="btn"><i class="plus"></i> Add new site</a>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Site Name</th>
+						<th>Api Key</th>
+						<th>Messages (daily avg*)</th>
+						<th>Connections (daily avg*)</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for a in accounts %}
+					<tr>
+						<td>{{ a.site_prefix }}</td>
+						<td>{{ a.api_key }}</td> 
+						<td>{{ a.messages }}</td>
+						<td>{{ a.connections }}</td>
+						<td><a href="{% url sites_edit a.id %}">edit</a>&nbsp;&nbsp;
+							<a href="" class="delete" id="{{ a.id }}">delete</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<p><small>* Daily average over 30 days</small></p>                                     
+		</div>
+	</div>    
+	
+	<div class="modal fade hide" id="delete-modal">
+	  <div class="modal-header">
+	    <a class="close" data-dismiss="modal">×</a>
+	    <h3>Are you sure you want to delete this site?</h3>
+	  </div>
+	  <div class="modal-body">
+	    <p>This site will be inaccessible to you and your users. It will be disabled for 30 days and 
+		then automatically deleted. Click 'Delete site' below if you're sure, you won't get any further confirmations.</p>
+	  </div>
+	  <div class="modal-footer">
+	    <a href="#" class="btn danger" id="del_btn">Delete site</a>
+	    <a href="#" class="btn" data-dismiss="modal">Close</a>
+	  </div>
+	</div>
+{% endblock main_content %}

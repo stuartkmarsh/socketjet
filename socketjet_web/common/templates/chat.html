@@ -1,0 +1,42 @@
+<html>
+  <head>  
+	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
+	<script src="{{ STATIC_URL }}js/json2.js"></script>
+    <script src="{{ STATIC_URL }}socket_lib/socket.io.js"></script>
+	<script> 
+	$(document).ready(function(){  
+		var url = 'http://localhost:8001';
+		// test script for all socket functionality
+		var socket = io.connect(url+'?api_key=add_api_key&user_id=1');
+		
+		// general authentication 
+		socket.on('connect', function(){
+			socket.emit('get-connid', function(data){
+				$('#message').html('got connid');
+			    connid = data; 
+			    //$.post('/websocket/auth/', {api_key:'1234', conn_id:connid});         
+				$.post('/websocket/auth/', {api_key:'add_api_key', conn_id:connid, channel:'privatechan1'}, function(data){
+					//alert(data.message);
+				});
+			});
+		});
+		
+		socket.emit('subscribe', 'chat', function(data){
+		    alert(data);
+		});
+		
+		socket.on('chat', function(data){
+		    $('#messages').html($('#messages').html() + '<br>' + data);
+		});
+		
+		$('#btn').click(function(){
+		    socket.emit('chat', {message:$('#message').val()});
+		});
+    });
+    </script>
+ <head>
+ <body>
+    <input type="text" id="message" /><button type="button" id="btn">Send</button>
+    <div id="messages"></div>
+ </body>
+</html>

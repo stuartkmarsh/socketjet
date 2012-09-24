@@ -1,0 +1,79 @@
+{% extends "dashboard_base.html" %} 
+
+{% block script %}
+	{{ block.super }}
+	<script type="text/javascript">  
+		$(document).ready(function() {
+			$('.delete').click(function() {    
+				$('#del_btn').attr('href', '/dashboard/channels/delete/' + this.id + '/');
+				$('#delete-modal').modal('show');
+				return false;
+			});
+		});
+	</script>
+{% endblock %}
+                                 
+{% block main_content %}
+	
+	<div class="row">  
+		<div class="span12">
+			<ul class="nav pills">
+				<li><a href="{% url sites_list %}">Sites</a></li>
+				<li class="active"><a href="{% url channels_list %}">Channels</a></li>
+				<li><a href="">Users</a></li>
+			</ul> 
+			
+			{% if messages %}
+				{% for message in messages %}
+				 	<div class="alert alert-success">
+						<a class="close" data-dismiss="alert">&times;</a>
+						<strong>Success!</strong>
+						{{ message }}
+					</div>
+				{% endfor %}
+			{% endif %}
+			
+			<h2 class="page-header">Private Channels</h2>
+			<a href="/dashboard/channels/add/" class="btn"><i class="plus"></i> Add new channel</a>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Channel name</th>
+						<th>Site</th> 
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody> 
+					{% if channels %}
+						{% for c in channels %}
+							<tr>
+								<td>{{ c.channel_name }}</td> 
+								<td>{{ c.site.site_prefix }}</td>   
+								<td><a href="/dashboard/channels/edit/{{ c.id }}/">edit</a>&nbsp;&nbsp;
+									<a href="" class="delete" id="{{ c.id }}">delete</a></td>
+							</tr> 
+						{% endfor %}
+					{% else %}
+					 	<tr>
+							<td colspan="2">No channels have been created</td>
+						</tr>
+					{% endif %}
+				</tbody>
+			</table>                                                        
+		</div>
+	</div>        
+	
+	<div class="modal fade hide" id="delete-modal">
+	  <div class="modal-header">
+	    <a class="close" data-dismiss="modal">×</a>
+	    <h3>Are you sure you want to delete this channel?</h3>
+	  </div>
+	  <div class="modal-body">
+	    <p>This may affect your application if it relies on this channel for private communications.</p>
+	  </div>
+	  <div class="modal-footer">
+	    <a href="#" class="btn danger" id="del_btn">Delete channel</a>
+	    <a href="#" class="btn" data-dismiss="modal">Close</a>
+	  </div>
+	</div>
+{% endblock main_content %}

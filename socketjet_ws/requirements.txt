@@ -1,0 +1,6 @@
+-e git://github.com/facebook/tornado.git#egg=tornado
+-e git+git://github.com/andymccurdy/redis-py.git#egg=redis
+-e git+git://github.com/MrJoes/tornadio2.git#egg=tornadio2  
+mysql-python
+pika
+

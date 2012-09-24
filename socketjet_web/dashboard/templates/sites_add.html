@@ -1,0 +1,50 @@
+{% extends 'dashboard_base.html' %}   
+
+{% block main_content %}
+	<div class="row">
+		<div class="span12"> 
+            <ul class="breadcrumb">
+				<li><a href="/dashboard/sites/">List sites</a> <span class="divider">/</span></li>
+				<li class="active"><strong>Add site</strong></li>
+			</ul>
+			
+			<h2 class="page-header">Add Site</h2>      
+
+			<form action="." method="POST" class="form-horizontal" enctype="multipart/form-data">{% csrf_token %}
+				<div class="control-group {% if form.site_prefix.errors %}error{% endif %}">
+	               	<label for="id_site_prefix">{{ form.site_prefix.label }}</label>
+					<div class="controls">
+						{{ form.site_prefix }} 
+						{{ form.site_prefix.errors|safe }}
+					</div>  
+				</div>  
+				
+				<div class="control-group {% if form.html_file.errors %}error{% endif %}">
+	               	<label for="id_html_file">{{ form.html_file.label }}</label>
+					<div class="controls"> 
+						{{ form.html_file }} {{ form.html_file.errors|safe }}
+					</div>  
+				</div>
+				
+				<div class="control-group {% if form.logo.errors %}error{% endif %}">
+	               	<label for="id_site_prefix">{{ form.logo.label }}</label>
+					<div class="controls">   
+						{{ form.logo }} {{ form.logo.errors|safe }}  
+					</div>  
+				</div>
+				
+				<div class="control-group {% if form.background_image.errors %}error{% endif %}">
+	               	<label for="id_background_image">{{ form.background_image.label }}</label>
+					<div class="controls">    
+						{{ form.background_image }} {{ form.background_image.errors|safe }}
+					</div>  
+				</div>	
+				          
+				<div class="form-actions">
+	            	<button type="submit" class="btn primary">Create site</button>  
+				</div>
+				
+			</form>                
+		</div>
+	</div>
+{% endblock %}

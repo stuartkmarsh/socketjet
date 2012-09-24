@@ -1,0 +1,5 @@
+MySQL-python==1.2.3
+pika==0.9.5
+-e git://github.com/andymccurdy/redis-py.git@60e3be561417b3252d832c9fb45bf6072e3ccce8#egg=redis-dev
+-e git://github.com/facebook/tornado.git#egg=tornado
+wsgiref==0.1.2
